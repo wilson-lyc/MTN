@@ -10,7 +10,10 @@ opencv-python
 imageio
 imageio-ffmpeg
 
+# Match the server environment first. Install the CUDA 11.6 wheels beforehand.
 torch == 1.13.1
+torchvision == 0.14.1
+torchaudio == 0.13.1
 torch-ema
 einops
 tensorboard
@@ -25,7 +28,7 @@ dearpygui
 # for stable-diffusion
 huggingface_hub == 0.25.0
 diffusers == 0.18.2
-accelerate
+accelerate == 0.19.0
 transformers == 4.29.2
 
 # for dmtet and mesh export
@@ -36,9 +39,11 @@ pymeshlab == 2022.2.post3
 git+https://ghfast.top/https://github.com/NVlabs/nvdiffrast/
 
 # for zero123
-carvekit-colab
+# carvekit-colab is optional for image background removal and may pull a newer
+# torch stack on some mirrors. Install it separately only if you need
+# preprocess_image.py background removal in this environment.
 omegaconf
-pytorch-lightning
+pytorch-lightning == 1.9.5
 taming-transformers-rom1504
 kornia
 git+https://ghfast.top/https://github.com/openai/CLIP.git
