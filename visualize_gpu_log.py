@@ -69,17 +69,15 @@ def plot_gpu_log(df: pd.DataFrame, output_path: Path) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Visualize GPU usage logs exported to CSV.")
     parser.add_argument(
-        "--workbase",
+        "--path",
         type=Path,
-        default=Path("."),
-        help="Base directory containing gpu_log.csv and output image.",
+        required=True,
+        help="Path to the input CSV file.",
     )
-    parser.add_argument("--input", type=Path, default=Path("gpu_log.csv"), help="Input CSV path.")
-    parser.add_argument("--output", type=Path, default=Path("gpu_log.png"), help="Output image path.")
     args = parser.parse_args()
 
-    input_path = args.input if args.input.is_absolute() else args.workbase / args.input
-    output_path = args.output if args.output.is_absolute() else args.workbase / args.output
+    input_path = args.path.expanduser().resolve()
+    output_path = input_path.with_suffix(".png")
 
     df = load_gpu_log(input_path)
     plot_gpu_log(df, output_path)
