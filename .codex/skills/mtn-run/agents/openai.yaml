@@ -1,0 +1,4 @@
+interface:
+  display_name: "MTN Run"
+  short_description: "Generate MTN project run commands"
+  default_prompt: "Use $mtn-run to generate the right MTN run command for my task."
