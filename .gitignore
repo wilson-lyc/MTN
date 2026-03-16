@@ -4,6 +4,8 @@ build/
 *.so
 venv_*/
 .vscode/
+report/
+**/.DS_Store
 
 tmp*
 # data/
