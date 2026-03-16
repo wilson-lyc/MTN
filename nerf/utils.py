@@ -791,7 +791,7 @@ class Trainer(object):
         shading = 'normal'
         outputs_normals = self.model.render(rays_o, rays_d, mvp, H, W, staged=True, perturb=False, bg_color=None,
                                            ambient_ratio=ambient_ratio, shading=shading)
-        pred_normals = outputs_normals['image'][:, :, :3].reshape(B, H, W, 3).contiguous()
+        pred_normals = outputs_normals['image'].reshape(B, H, W, 3).contiguous()
 
         # dummy
         loss = torch.zeros([1], device=pred_rgb.device, dtype=pred_rgb.dtype)
@@ -822,7 +822,7 @@ class Trainer(object):
         shading = 'normal'
         outputs_normals = self.model.render(rays_o, rays_d, mvp, H, W, staged=True, perturb=False, light_d=light_d,
                                            ambient_ratio=ambient_ratio, shading=shading)
-        pred_normals = outputs_normals['image'][:, :, :3].reshape(B, H, W, 3).contiguous()
+        pred_normals = outputs_normals['image'].reshape(B, H, W, 3).contiguous()
 
         return pred_rgb, pred_depth, pred_normals, None
 
