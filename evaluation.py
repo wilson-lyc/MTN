@@ -69,7 +69,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--text', default="a lion, animated movie character, high detail 3d model", type=str)
     parser.add_argument('--path', default="./result/baseline/validation", type=str, help="directory containing the evaluation images")
-    parser.add_argument('--latest', default='ep00600', type=str)
+    parser.add_argument('--latest', default='ep0060', type=str)
     parser.add_argument('--mode', default='rgb', type=str)
     parser.add_argument('--clip', default="openai/clip-vit-base-patch32", type=str)
 
