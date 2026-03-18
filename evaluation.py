@@ -24,11 +24,11 @@ def resolve_clip_model_name(name: str) -> str:
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--text', default="", type=str, help="text prompt")
-    parser.add_argument('--path', default="trial/validation", type=str, help="directory containing the evaluation images")
-    parser.add_argument('--latest', default='ep0001', type=str, help="which epoch result you want to use for image path")
-    parser.add_argument('--mode', default='rgb', type=str, help="mode of result, color(rgb) or textureless()")
-    parser.add_argument('--clip', default="openai/clip-vit-base-patch32", type=str, help="Hugging Face CLIP model id, or a supported legacy alias")
+    parser.add_argument('--text', default="a lion, animated movie character, high detail 3d model", type=str)
+    parser.add_argument('--path', default="./result/baseline/validation", type=str, help="directory containing the evaluation images")
+    parser.add_argument('--latest', default='ep00600', type=str)
+    parser.add_argument('--mode', default='rgb', type=str)
+    parser.add_argument('--clip', default="openai/clip-vit-base-patch32", type=str)
 
     opt = parser.parse_args()
 
@@ -63,11 +63,11 @@ if __name__ == '__main__':
         print(line)
 
     avg_score = sum(scores) / len(scores)
-    avg_line = f"Average CLIP R-Precision: {avg_score:.6f}"
+    avg_line = f"Average CLIP Similarity: {avg_score:.6f}"
     output_lines.append(avg_line)
     print(avg_line)
 
-    output_path = image_dir / f"r_precision_{opt.latest}_{opt.mode}.csv"
+    output_path = image_dir / f"clip_score_{opt.latest}_{opt.mode}.csv"
     with output_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["image", "score"])

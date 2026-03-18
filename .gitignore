@@ -5,14 +5,7 @@ build/
 venv_*/
 .vscode/
 **/.DS_Store
-
-*.aux
-*.blg
-*.fdb_latexmk
-*.fls
-*.log
-*.out
-*.pdf
+result/
 
 tmp*
 # data/
