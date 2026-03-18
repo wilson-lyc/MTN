@@ -69,20 +69,29 @@ python main.py --workspace trial -O --test --gui
 # run from the project root
 python3 evaluation/r_precision.py \
   --text "a rabbit, animated movie character, high detail 3d model" \
-  --workspace trial \
+  --path trial/validation \
   --latest ep0100 \
-  --mode rgb \
-  --clip clip-ViT-B-32
+  --mode rgb
 ```
-The script reads the following validation images under `<workspace>/validation/`:
+By default, the script uses the Hugging Face OpenAI CLIP model `openai/clip-vit-base-patch32`. You can override it with `--clip <model_id>` if needed.
+
+The script reads the following validation images under `<path>`:
 ```
 df_<latest>_0001_<mode>.png
 ...
 df_<latest>_0008_<mode>.png
 ```
-It computes a CLIP similarity score for each view, reports the per-view scores and their average, and writes the result to:
+It computes a CLIP similarity score for each view, reports the per-view scores and their average, and writes the result to a CSV file in the same directory:
 ```
-<workspace>/r_precision_<latest>_<mode>.txt
+<path>/r_precision_<latest>_<mode>.csv
+```
+The CSV format is:
+```
+image,score
+df_<latest>_0001_<mode>.png,0.xxxxxx
+...
+df_<latest>_0008_<mode>.png,0.xxxxxx
+average,0.xxxxxx
 ```
 ### Tested environments
 * python 3.9 & torch 1.13 & CUDA 11.5 on a V100.

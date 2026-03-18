@@ -69,20 +69,29 @@ python main.py --workspace trial -O --test --gui
 # 请在项目根目录运行
 python3 evaluation/r_precision.py \
   --text "a rabbit, animated movie character, high detail 3d model" \
-  --workspace trial \
+  --path trial/validation \
   --latest ep0100 \
-  --mode rgb \
-  --clip clip-ViT-B-32
+  --mode rgb
 ```
-脚本会从 `<workspace>/validation/` 目录中读取以下验证图像：
+脚本默认使用 Hugging Face 上的 OpenAI CLIP 模型 `openai/clip-vit-base-patch32`。如有需要，可以通过 `--clip <model_id>` 指定其他模型。
+
+脚本会从 `<path>` 目录中读取以下验证图像：
 ```
 df_<latest>_0001_<mode>.png
 ...
 df_<latest>_0008_<mode>.png
 ```
-它会分别计算 8 个视角的 CLIP 相似度，输出每个视角的分数及平均值，并将结果写入：
+它会分别计算 8 个视角的 CLIP 相似度，输出每个视角的分数及平均值，并将结果以 CSV 文件写入同一目录：
 ```
-<workspace>/r_precision_<latest>_<mode>.txt
+<path>/r_precision_<latest>_<mode>.csv
+```
+CSV 格式如下：
+```
+image,score
+df_<latest>_0001_<mode>.png,0.xxxxxx
+...
+df_<latest>_0008_<mode>.png,0.xxxxxx
+average,0.xxxxxx
 ```
 ### 已测试环境
 * Python 3.9、torch 1.13、CUDA 11.5，运行于 V100。
