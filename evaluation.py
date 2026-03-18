@@ -26,21 +26,42 @@ def log(message: str) -> None:
 
 
 def extract_text_embedding(model, text_inputs):
-    outputs = model(**text_inputs)
-    if hasattr(outputs, "text_embeds") and outputs.text_embeds is not None:
-        return outputs.text_embeds
-    if hasattr(outputs, "text_model_output") and hasattr(outputs.text_model_output, "pooler_output"):
-        return outputs.text_model_output.pooler_output
-    raise TypeError(f"Unsupported text output type: {type(outputs)}")
+    text_kwargs = {
+        "input_ids": text_inputs["input_ids"],
+        "attention_mask": text_inputs.get("attention_mask"),
+    }
+
+    if hasattr(model, "get_text_features"):
+        try:
+            outputs = model.get_text_features(**text_kwargs)
+            if torch.is_tensor(outputs):
+                return outputs
+            if hasattr(outputs, "text_embeds") and outputs.text_embeds is not None:
+                return outputs.text_embeds
+        except Exception:
+            pass
+
+    text_outputs = model.text_model(**text_kwargs)
+    pooled = text_outputs.pooler_output
+    return model.text_projection(pooled)
 
 
 def extract_image_embedding(model, image_inputs):
-    outputs = model(**image_inputs)
-    if hasattr(outputs, "image_embeds") and outputs.image_embeds is not None:
-        return outputs.image_embeds
-    if hasattr(outputs, "vision_model_output") and hasattr(outputs.vision_model_output, "pooler_output"):
-        return outputs.vision_model_output.pooler_output
-    raise TypeError(f"Unsupported image output type: {type(outputs)}")
+    image_kwargs = {"pixel_values": image_inputs["pixel_values"]}
+
+    if hasattr(model, "get_image_features"):
+        try:
+            outputs = model.get_image_features(**image_kwargs)
+            if torch.is_tensor(outputs):
+                return outputs
+            if hasattr(outputs, "image_embeds") and outputs.image_embeds is not None:
+                return outputs.image_embeds
+        except Exception:
+            pass
+
+    vision_outputs = model.vision_model(**image_kwargs)
+    pooled = vision_outputs.pooler_output
+    return model.visual_projection(pooled)
 
 
 if __name__ == '__main__':
