@@ -1,0 +1,112 @@
+\section*{Appendix}
+\setcounter{section}{0}
+\renewcommand\thesection{\Alph{section}}
+
+\section{More Quantitative Results}
+
+%\textbf{Transfer learning from University-1652 to small datasets.} 
+%We evaluate the generalization ability of the baseline model on two small datasets, \ie, Oxford \cite{philbin2007object} and Pairs \cite{philbin2008lost}. Oxford and Pairs are two popular place recognition datasets. We directly evaluate our model on these two datasets without finetuning. Further, we also report the results on the revised Oxford and Paris datasets (denoted as ROxf and RPar) \cite{RITAC18}. In contrast to the generic feature trained on ImageNet \cite{deng2009imagenet}, the learned feature on University-1652 shows better generalization ability. Specifically, we try two different branches, \ie, $\mathcal{F}_s$ and $\mathcal{F}_g$, to extract features. $\mathcal{F}_s$ and $\mathcal{F}_g$ share the high-level feature space but pay attention to different low-level patterns of inputs from different platforms. $\mathcal{F}_s$ is learned on the satellite-view images and drone-view images, while $\mathcal{F}_g$ learns from ground-view images. As shown in Table \ref{table:loss}, $\mathcal{F}_g$ has achieved better performance than $\mathcal{F}_s$. We speculate that there are two main reasons. First, the test data in Oxford and Pairs are collected from Flickr, which is closer to the Google Street View images and the images retrieved from Google Image in the ground-view data. Second, $\mathcal{F}_s$ pay more attention to the vertical viewpoint changes instead of the horizontal viewpoint changes, which are common in Oxford and Paris.
+
+\textbf{With/without Google Image data.} In the University-1652 training data, we introduce the ground-view images collected from Google Image. We observe that although the extra data retrieved from Google Image contains noise, most images are true-matched images of the target building. In Table \ref{table:Google}, we report the results with/without the Google Image training data. The baseline model trained with extra data generally boosts the performance not only on the ground-related tasks, \ie, Ground $\rightarrow$ Satellite and Satellite $\rightarrow$ Ground,  but on the drone-related tasks, \ie, Drone $\rightarrow$ Satellite and Satellite $\rightarrow$ Drone. The result also verifies that our baseline method could perform well against the noisy data in the training set.
+
+
+\section{More Qualitative Results}
+\textbf{Visualization of cross-view features.} 
+We sample $500$ pairs of drone-view and satellite-view images in the test set to extract features and then apply the widely-used t-SNE \cite{van2014accelerating} to learn the 2D projection of every feature. As shown in Figure~\ref{fig:cluster}, the features of the same location are close, and the features of different target buildings are far away. It demonstrates that our baseline model learns the effective feature space, which is discriminative.
+
+
+\section{More Details of University-1652}
+
+\textbf{Building name list.} We show the name of the first $100$ buildings in University-1652 (see Table \ref{table:BuildingName}). 
+
+\noindent\textbf{Data License.} We carefully check the data license from Google. There are two main points.
+First, the data of Google Map and Google Earth could be used based on fair usage. We will follow the guideline on this official website \footnote{\url{https://www.google.com/permissions/geoguidelines/}}.
+Second, several existing datasets have utilized the Google data. In practice, we will adopt a similar policy of existing datasets \footnote{\url{http://www.ok.ctrl.titech.ac.jp/~torii/project/247/}}$^,$ 
+\footnote{\url{http://cs.uky.edu/~jacobs/datasets/cvusa/}} to release the dataset based on the academic request. 
+
+\noindent\textbf{Frame-level metadata.} Besides drone-view videos, we also record the frame-level metadata, including the building name, longitude, latitude, altitude, heading, tilt and range (see Figure~\ref{fig:metadata}). Exploiting metadata is out of the scope of this paper, so we do not explore the usage of attributes in this work. But we think that the metadata could enable the future study, \eg, orientation alignment between drone-view images and satellite-view images. In the future, we will continue to study this problem.
+
+%\noindent\textbf{Image samples.} We sample the images from three platforms in University-1652, and show them in Figure~\ref{fig:drone-data}, Figure~\ref{fig:satellite-data}, Figure~\ref{fig:ground-data}, and Figure~\ref{fig:google-data}, separately. Figure~\ref{fig:drone-data} shows drone-view images in University-1652, and Figure~\ref{fig:satellite-data} contains samples from the satellite-view data. Figure~\ref{fig:ground-data} displays the ground-view images collected from Google Street View, followed by the noisy training data that we obtained from the image search engine, \ie, Google Image.
+
+%\textbf{Ground to Drone.}
+
+%\textbf{Handcrafted Features.} Here we provide the results with the traditional handcrafted features, \ie, SIFT and SURF. 
+\begin{figure*}[t]
+\begin{center}
+    \includegraphics[width=0.95\linewidth]{images/cluster-all.jpg}
+\end{center}
+%\vspace{-.2in}
+     \caption{Visualization of cross-view features using t-SNE \cite{van2014accelerating} on University-1652. (Best viewed when zoomed in.)
+     }\label{fig:cluster}
+%\vspace{.3in}
+\end{figure*}
+
+\begin{figure}[t]
+\begin{center}
+    \includegraphics[width=1\linewidth]{images/metadata.jpg}
+\end{center}
+%\vspace{-.2in}
+     \caption{Metadata samples. We record attributes for every frame, including the building name, longitude, latitude, altitude, heading, tilt and range. }\label{fig:metadata}
+\end{figure}
+
+\setlength{\tabcolsep}{7pt}
+\begin{table*}
+\small
+\begin{center}
+\begin{tabular}{l|ccc|ccc|ccc|ccc}
+\hline
+\multirow{2}{*}{Model} & \multicolumn{3}{c|}{Drone $\rightarrow$ Satellite} & \multicolumn{3}{c|}{Satellite $\rightarrow$ Drone} & \multicolumn{3}{c|}{Ground $\rightarrow$ Satellite} & 
+\multicolumn{3}{c}{Satellite $\rightarrow$ Ground}\\
+  & R@1 & R@10 & AP & R@1 & R@10 & AP & R@1 & R@10 & AP & R@1 & R@10 & AP \\
+\shline
+Without noisy data  & 57.52 & 83.89 & 62.29 & 69.19 & 82.31 & 56.15 & \textbf{1.28} & 6.20 & 2.29& \textbf{1.57} & 7.13 & \textbf{1.52}\\
+With noisy data & \textbf{58.49} & \textbf{85.23} &  \textbf{63.13} & \textbf{71.18} & \textbf{82.31} & \textbf{58.74} & 1.20 & \textbf{7.56} & \textbf{2.52} & 1.14 & \textbf{8.56} & 1.41 \\
+\hline
+\end{tabular}
+\end{center}
+%\vspace{-.2in}
+\caption{Ablation study. With / without noisy training data from Google Image. The baseline model trained with the Google Image data is generally better in all four tasks. The result also verifies that our baseline method could perform well against the noise in the dataset.
+}
+\label{table:Google}
+\end{table*}
+
+\input{building_name.tex}
+
+\begin{comment}
+\begin{figure*}[t]
+\begin{center}
+    \includegraphics[width=0.95\linewidth]{images/sample_drone.jpg}
+\end{center}
+%\vspace{-.25in}
+     \caption{Images sampled from drone-view images of the University-1652 dataset.
+     }\label{fig:drone-data}
+\end{figure*}
+
+\begin{figure*}[t]
+\begin{center}
+    \includegraphics[width=0.95\linewidth]{images/sample_satellite.jpg}
+\end{center}
+%\vspace{-.25in}
+     \caption{Images sampled from satellite-view images of the University-1652 dataset.
+     }\label{fig:satellite-data}
+\end{figure*}
+
+\begin{figure*}[t]
+\begin{center}
+    \includegraphics[width=0.95\linewidth]{images/sample_street.jpg}
+\end{center}
+%\vspace{-.25in}
+     \caption{Images sampled from ground-view images of the University-1652 dataset (collected from Google Street View).
+     }\label{fig:ground-data}
+\end{figure*}
+
+\begin{figure*}[t]
+\begin{center}
+    \includegraphics[width=0.95\linewidth]{images/sample_google.jpg}
+\end{center}
+%\vspace{-.25in}
+     \caption{Images sampled from ground-view images (noisy) of the University-1652 dataset (collected from Google Image).
+     }\label{fig:google-data}
+\end{figure*}
+
+\end{comment}

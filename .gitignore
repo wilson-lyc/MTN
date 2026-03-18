@@ -4,8 +4,15 @@ build/
 *.so
 venv_*/
 .vscode/
-report/
 **/.DS_Store
+
+*.aux
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.pdf
 
 tmp*
 # data/
