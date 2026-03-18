@@ -64,6 +64,26 @@ python main.py --workspace trial -O --test --save_mesh
 # test with a GUI (free view control!)
 python main.py --workspace trial -O --test --gui
 ```
+3. Evaluate CLIP text-image consistency with 8 validation views:
+```
+# run from the project root
+python3 evaluation/r_precision.py \
+  --text "a rabbit, animated movie character, high detail 3d model" \
+  --workspace trial \
+  --latest ep0100 \
+  --mode rgb \
+  --clip clip-ViT-B-32
+```
+The script reads the following validation images under `<workspace>/validation/`:
+```
+df_<latest>_0001_<mode>.png
+...
+df_<latest>_0008_<mode>.png
+```
+It computes a CLIP similarity score for each view, reports the per-view scores and their average, and writes the result to:
+```
+<workspace>/r_precision_<latest>_<mode>.txt
+```
 ### Tested environments
 * python 3.9 & torch 1.13 & CUDA 11.5 on a V100.
 * python 3.9 & torch 1.13 & CUDA 11.7 on a 3090/4090. 

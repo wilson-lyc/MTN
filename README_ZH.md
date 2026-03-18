@@ -64,6 +64,26 @@ python main.py --workspace trial -O --test --save_mesh
 # 使用 GUI 测试（可自由控制视角！）
 python main.py --workspace trial -O --test --gui
 ```
+3. 使用 8 个验证视角评测 CLIP 文本-图像一致性：
+```
+# 请在项目根目录运行
+python3 evaluation/r_precision.py \
+  --text "a rabbit, animated movie character, high detail 3d model" \
+  --workspace trial \
+  --latest ep0100 \
+  --mode rgb \
+  --clip clip-ViT-B-32
+```
+脚本会从 `<workspace>/validation/` 目录中读取以下验证图像：
+```
+df_<latest>_0001_<mode>.png
+...
+df_<latest>_0008_<mode>.png
+```
+它会分别计算 8 个视角的 CLIP 相似度，输出每个视角的分数及平均值，并将结果写入：
+```
+<workspace>/r_precision_<latest>_<mode>.txt
+```
 ### 已测试环境
 * Python 3.9、torch 1.13、CUDA 11.5，运行于 V100。
 * Python 3.9、torch 1.13、CUDA 11.7，运行于 3090/4090。
