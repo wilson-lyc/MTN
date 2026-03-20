@@ -33,20 +33,22 @@ def load_gpu_log(csv_path: Path) -> pd.DataFrame:
     for column in numeric_columns:
         df[column] = _parse_numeric(df[column])
 
-    return df.dropna(subset=["timestamp"]).sort_values("timestamp")
+    return df.dropna(subset=["timestamp"]).sort_values("timestamp").reset_index(drop=True)
 
 
 def plot_gpu_log(df: pd.DataFrame, output_path: Path) -> None:
     fig, axes = plt.subplots(3, 1, figsize=(14, 10), sharex=True)
 
-    axes[0].plot(df["timestamp"], df["utilization.gpu [%]"], label="GPU Utilization", linewidth=2)
-    axes[0].plot(df["timestamp"], df["utilization.memory [%]"], label="Memory Utilization", linewidth=2)
+    elapsed_minutes = df.index * 5 / 60  # 每条记录间隔5秒，转换为分钟
+
+    axes[0].plot(elapsed_minutes, df["utilization.gpu [%]"], label="GPU Utilization", linewidth=2)
+    axes[0].plot(elapsed_minutes, df["utilization.memory [%]"], label="Memory Utilization", linewidth=2)
     axes[0].set_ylabel("Utilization (%)")
     axes[0].set_ylim(0, 100)
     axes[0].grid(True, alpha=0.3)
     axes[0].legend()
 
-    axes[1].plot(df["timestamp"], df["memory.used [MiB]"], color="tab:orange", linewidth=2, label="Memory Used")
+    axes[1].plot(elapsed_minutes, df["memory.used [MiB]"], color="tab:orange", linewidth=2, label="Memory Used")
     if df["memory.total [MiB]"].notna().any():
         total_memory = df["memory.total [MiB]"].dropna().iloc[0]
         axes[1].axhline(total_memory, color="tab:red", linestyle="--", alpha=0.7, label="Memory Total")
@@ -54,13 +56,12 @@ def plot_gpu_log(df: pd.DataFrame, output_path: Path) -> None:
     axes[1].grid(True, alpha=0.3)
     axes[1].legend()
 
-    axes[2].plot(df["timestamp"], df["temperature.gpu"], color="tab:green", linewidth=2)
+    axes[2].plot(elapsed_minutes, df["temperature.gpu"], color="tab:green", linewidth=2)
     axes[2].set_ylabel("Temperature (C)")
-    axes[2].set_xlabel("Timestamp")
+    axes[2].set_xlabel("Training Duration (min)")
     axes[2].grid(True, alpha=0.3)
 
-    fig.suptitle("GPU Log Visualization")
-    fig.autofmt_xdate()
+    fig.suptitle("GPU Log")
     fig.tight_layout()
     fig.savefig(output_path, dpi=150, bbox_inches="tight")
     plt.close(fig)
